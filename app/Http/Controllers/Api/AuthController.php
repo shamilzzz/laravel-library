@@ -22,7 +22,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
-            'role' => UserRole::MEMBER,
+            'role' => $request->role,
             'status' => UserStatus::ACTIVE,
             'phone' => $request->phone,
             'address' => $request->address,
@@ -30,12 +30,11 @@ class AuthController extends Controller
 
         $token = $user->createToken('api-token')->plainTextToken;
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Registration successful.',
+        return $this->success([
             'token' => $token,
             'user' => new UserResource($user),
-        ], 201);
+        ], 'Registration successful.', 201);
+
     }
 
 
