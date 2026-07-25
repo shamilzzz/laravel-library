@@ -23,9 +23,9 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->timestamp('borrowed_at');
-            $table->timestamp('due_date');
-            $table->timestamp('returned_at')->nullable();
+            $table->dateTime('borrowed_at');
+            $table->dateTime('due_date');
+            $table->dateTime('returned_at')->nullable();
 
             $table->string('status')
                 ->default(BorrowingStatus::BORROWED->value);

@@ -9,7 +9,6 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Enums\UserRole;
 use App\Enums\UserStatus;
 
 
@@ -36,12 +35,6 @@ class AuthController extends Controller
         ], 'Registration successful.', 201);
 
     }
-
-
-
-
-
-
 
 
     /**

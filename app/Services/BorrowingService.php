@@ -10,6 +10,8 @@ use App\Models\BookCopy;
 use App\Models\BookQueue;
 use App\Models\Borrowing;
 use App\Models\LibrarySetting;
+use App\Mail\BookAvailableMail;
+use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -73,6 +75,10 @@ class BorrowingService
             $position = BookQueue::where('book_id', $data['book_id'])
                 ->max('position');
 
+
+            $queuePosition = ($position ?? 0) + 1;
+
+
             BookQueue::create([
                 'user_id' => $member->id,
                 'book_id' => $data['book_id'],
@@ -81,6 +87,7 @@ class BorrowingService
 
             return [
                 'queued' => true,
+                'position' => $queuePosition,
                 'message' => 'No copies available. Member added to waiting queue.',
             ];
         }
@@ -99,6 +106,12 @@ class BorrowingService
             $copy->update([
                 'status' => BookCopyStatus::BORROWED,
             ]);
+
+            // Remove the member from the waiting queue after successfully borrowing.
+            BookQueue::where('user_id', $member->id)
+                    ->where('book_id', $data['book_id'])
+                    ->delete();
+
 
             return [
                 'queued' => false,
@@ -166,7 +179,8 @@ class BorrowingService
 
     private function processQueue(int $bookId): void
     {
-        $queue = BookQueue::where('book_id', $bookId)
+        $queue = BookQueue::with(['user', 'book'])
+            ->where('book_id', $bookId)
             ->whereNull('notified_at')
             ->orderBy('position')
             ->first();
@@ -174,6 +188,9 @@ class BorrowingService
         if (!$queue) {
             return;
         }
+
+        Mail::to($queue->user->email)
+            ->send(new BookAvailableMail($queue));
 
         $queue->update([
             'notified_at' => now(),

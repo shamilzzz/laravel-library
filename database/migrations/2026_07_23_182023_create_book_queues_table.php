@@ -21,8 +21,8 @@ return new class extends Migration
 
             $table->unsignedInteger('position');
 
-            $table->timestamp('notified_at')->nullable();
-
+            $table->dateTime('notified_at')->nullable();
+            
             $table->timestamps();
 
             $table->unique(['user_id', 'book_id']);

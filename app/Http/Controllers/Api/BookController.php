@@ -58,12 +58,12 @@ class BookController extends Controller
 
             $data = $request->validated();
 
-            $authors = $data['authors'];
-            unset($data['authors']);
+            $authorIds = $data['author_ids'];
+            unset($data['author_ids']);
 
             $book = Book::create($data);
 
-            $book->authors()->attach($authors);
+            $book->authors()->attach($authorIds);
 
             return $book;
         });
@@ -105,12 +105,12 @@ class BookController extends Controller
 
             $data = $request->validated();
 
-            $authors = $data['authors'];
-            unset($data['authors']);
+            $authorIds = $data['author_ids'];
+            unset($data['author_ids']);
 
             $book->update($data);
 
-            $book->authors()->sync($authors);
+            $book->authors()->sync($authorIds);
 
             return $book;
         });

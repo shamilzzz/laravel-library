@@ -57,9 +57,11 @@ class BorrowingController extends Controller
 
             if ($result['queued']) {
                 return $this->success(
-                    null,
-                    $result['message'],
-                    200
+                    [
+                        'queued' => true,
+                        'position' => $result['position'],
+                    ],
+                    $result['message']
                 );
             }
 

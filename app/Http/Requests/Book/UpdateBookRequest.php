@@ -37,9 +37,9 @@ class UpdateBookRequest extends FormRequest
 
             'description' => ['nullable', 'string'],
 
-            'authors' => ['required', 'array', 'min:1'],
+            'author_ids' => ['required', 'array', 'min:1'],
 
-            'authors.*' => ['exists:authors,id'],
+            'author_ids.*' => ['exists:authors,id'],
 
             'price' => ['required', 'numeric', 'min:0'],
         ];
